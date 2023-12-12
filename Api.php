@@ -2,7 +2,7 @@
 
 require_once 'Conexion.php';
 
-final readonly class Api {
+class Api {
 	// Instancia de la conexión
     private PDO $db;
 
