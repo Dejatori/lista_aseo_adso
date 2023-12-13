@@ -94,9 +94,15 @@ final class Api {
 	 *
 	 * @return void
 	 */
-	private function ejecutarConsulta($metodo, int $id, string $aprendiz): void
+	private function ejecutarConsulta($metodo, int $id, ?string $aprendiz): void
 	{
 		try {
+			// Si no se envio un nombre de aprendiz, por defecto se le suma un punto a David Toscano
+			if ($aprendiz === null) {
+				$id = 7;
+				$aprendiz = 'David Toscano';
+			}
+
 			// Actualizar el registro de la solicitud por su id
 			$sql = 'UPDATE lista SET puntos = puntos + 1 WHERE id = ? AND aprendiz = ?';
 			$stmt = $this->db->prepare($sql);
