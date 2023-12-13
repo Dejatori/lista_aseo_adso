@@ -2,7 +2,7 @@
 
 require_once 'Conexion.php';
 
-class Api {
+final class Api {
 	// Instancia de la conexión
     private PDO $db;
 
@@ -61,6 +61,7 @@ class Api {
 	    if ($metodo === 'GET' || $metodo === 'PUT' || $metodo === 'PATCH') {
 		    // Para los métodos GET, PUT y PATCH, obtener el id de la URL
 		    $id = $_GET['id'] ?? null;
+			$aprendiz = $_GET['aprendiz'] ?? null;
 	    } else if ($metodo === 'POST') {
 		    // Para el método POST, obtener el id del cuerpo de la solicitud
 		    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
@@ -74,7 +75,7 @@ class Api {
 
         // Ejecutar el método correspondiente
         match ($metodo) {
-            'GET' => $this->get($id),
+            'GET' => $this->get($id, $aprendiz),
             'POST' => $this->post($id),
             'PUT' => $this->put($id),
             'PATCH' => $this->patch($id),
@@ -89,16 +90,17 @@ class Api {
 	 *
 	 * @param $metodo
 	 * @param $id
+	 * @param $aprendiz
 	 *
 	 * @return void
 	 */
-	private function ejecutarConsulta($metodo, $id): void
+	private function ejecutarConsulta($metodo, int $id, string $aprendiz): void
 	{
 		try {
 			// Actualizar el registro de la solicitud por su id
-			$sql = 'UPDATE lista SET puntos = puntos + 1 WHERE id = ?';
+			$sql = 'UPDATE lista SET puntos = puntos + 1 WHERE id = ? AND aprendiz = ?';
 			$stmt = $this->db->prepare($sql);
-			$stmt->execute([$id]);
+			$stmt->execute([$id, $aprendiz]);
 
 			// Obtener los valores actualizados de 'aprendiz' y 'puntos'
 			$sql = 'SELECT aprendiz, puntos FROM lista WHERE id = ?';
@@ -126,9 +128,9 @@ class Api {
 	}
 
 	// Métodos para ejecutar la consulta según el método de la solicitud
-    public function get($id): void
+    public function get($id, $aprendiz): void
     {
-	    $this->ejecutarConsulta('GET', $id);
+	    $this->ejecutarConsulta('GET', $id, $aprendiz);
     }
 
     public function post($id): void
